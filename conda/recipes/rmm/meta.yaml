@@ -38,6 +38,8 @@ build:
 
 requirements:
   build:
+    # TODO: See discussion in https://github.com/conda-forge/scikit-build-feedstock/issues/69,
+    # should cmake/ninja be in this section or in host?
     - cmake {{ cmake_version }}
     - ninja
     - {{ compiler('c') }}
@@ -61,8 +63,7 @@ requirements:
     - cython >=0.29,<0.30
     - librmm ={{ version }}
     - python
-    - scikit-build >=0.13.1
-    - setuptools >=61.0.0
+    - scikit-build-core
     - tomli  # [py<311]
   run:
     {% if cuda_major == "11" %}
