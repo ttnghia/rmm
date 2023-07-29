@@ -114,3 +114,4 @@ ninja.make-fallback = true
 cmake.build-type = "Release"
 sdist.reproducible = true
 wheel.packages = ["rmm"]
+build-dir = "build/{wheel_tag}"
