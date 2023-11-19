@@ -23,8 +23,6 @@
 
 #include <cuda_runtime_api.h>
 
-#include <cuda/memory_resource>
-
 #include <gtest/gtest.h>
 
 #include <cstddef>
@@ -43,7 +41,11 @@ inline bool is_device_memory(void* ptr)
 {
   cudaPointerAttributes attributes{};
   if (cudaSuccess != cudaPointerGetAttributes(&attributes, ptr)) { return false; }
+#if CUDART_VERSION < 10000  // memoryType is deprecated in CUDA 10
+  return attributes.memoryType == cudaMemoryTypeDevice;
+#else
   return (attributes.type == cudaMemoryTypeDevice) or (attributes.type == cudaMemoryTypeManaged);
+#endif
 }
 
 /**
@@ -78,8 +80,6 @@ struct MRTest : public ::testing::Test {
 };
 
 using resources = ::testing::Types<rmm::mr::new_delete_resource, rmm::mr::pinned_memory_resource>;
-static_assert(cuda::mr::resource_with<rmm::mr::new_delete_resource, cuda::mr::host_accessible>);
-static_assert(cuda::mr::resource_with<rmm::mr::pinned_memory_resource, cuda::mr::host_accessible>);
 
 TYPED_TEST_CASE(MRTest, resources);
 
